@@ -49,6 +49,15 @@ const char* rebx_githash_str = STRINGIFY(REBXGITHASH);             // This line 
  ****************************/
 
 void rebx_register_default_params(struct rebx_extras* rebx){
+    rebx_register_param(rebx, "dcp_gc", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_gd", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_mo", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_md", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_mc", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_rh", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_m", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "dcp_smooth", REBX_TYPE_INT);
+
     rebx_register_param(rebx, "c", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "gr_source", REBX_TYPE_INT);
     rebx_register_param(rebx, "tau_mass", REBX_TYPE_DOUBLE);

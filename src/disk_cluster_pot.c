@@ -60,16 +60,24 @@
 #include "rebound.h"
 #include "reboundx.h"
 
-static void rebx_disk_cluster_force(struct reb_simulation* const sim, struct reb_particle* const particles, const int N, 
-                                         const double gc, const double gd, const double mo, const double md, 
-                                         const double mc, const double rh, const double m, const int smooth){
-    const double fac1 = mo/pow(rh,3); 
-    const double tgd = (2-gd)*(3-gd); 
-    const double C = 6*(3-gd)/(8-tgd);
+void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force* const force, struct reb_particle* const particles, const int N){
+    struct rebx_extras* const rebx = sim->extras;
+    const double* gc = rebx_get_param(rebx, force->ap, "dcp_gc");
+    const double* gd = rebx_get_param(rebx, force->ap, "dcp_gd");
+    const double* mo = rebx_get_param(rebx, force->ap, "dcp_mo");
+    const double* md = rebx_get_param(rebx, force->ap, "dcp_md");
+    const double* mc = rebx_get_param(rebx, force->ap, "dcp_mc");
+    const double* rh = rebx_get_param(rebx, force->ap, "dcp_rh");
+    const double* smooth = rebx_get_param(rebx, force->ap, "dcp_smooth");
+
+    const double fac1 = *mo/pow(*rh,3); 
+    const double tgd = (2-*gd)*(3-*gd); 
+    const double C = 6*(3-*gd)/(8-tgd);
     const double B = (tgd - 2)/(2*(6-tgd));
     const double A = -(tgd-2)*(8-tgd)/(2*tgd*(6-tgd));
 
     for (int i=1; i<N; i++){
+        const double* m = rebx_get_param(rebx, particles[i].ap, "dcp_m");
         const struct reb_particle p = particles[i];
         const double x = p.x;
         const double y = p.y;
@@ -80,9 +88,9 @@ static void rebx_disk_cluster_force(struct reb_simulation* const sim, struct reb
         const double cos_t2 = pow(cos_t,2);
         const double abs_cos_t = abs(cos_t);
 
-        const double fac2 = mc*pow(r/rh, -gc); 
-        const double fac3 = C * (md/mo) * pow(r/rh, -gd);
-        const double fac31 = (A + abs_cos_t + B*cos_t2)*(2-gd);
+        const double fac2 = *mc*pow(r/(*rh), -(*gc)); 
+        const double fac3 = C * (*md/(*mo)) * pow(r/(*rh), -(*gd));
+        const double fac31 = (A + abs_cos_t + B*cos_t2)*(2-(*gd));
         const double fac32xy = abs_cos_t + 2*B*cos_t2;
 
         const double zsmooth = 1.;
@@ -92,8 +100,8 @@ static void rebx_disk_cluster_force(struct reb_simulation* const sim, struct reb
 
         const double fac32z = pow(sin(arccos(z/r)),2) * (zsmooth*sign(z) + 2*B*cos_t);
 
-        particles[i].ax += -(fac1 * x*(fac2 + fac3*(fac31 - fac32xy)))/m;
-        particles[i].ay += -(fac1 * y*(fac2 + fac3*(fac31 - fac32xy)))/m;
-        particles[i].az += -(fac1 * (fac2*z + fac3*(fac31*z + fac32z*r)))/m;
+        particles[i].ax += -(fac1 * x*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
+        particles[i].ay += -(fac1 * y*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
+        particles[i].az += -(fac1 * (fac2*z + fac3*(fac31*z + fac32z*r)))/(*m);
     }
 }
