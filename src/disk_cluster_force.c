@@ -98,7 +98,9 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
             const double zsmooth = (1.- exp(-pow(z,2)/(.001*r2)));
         }
 
-        const double fac32z = pow(sin(acos(z/r)),2) * (zsmooth*sign(z) + 2*B*cos_t);
+        const int sgnz = 1.;
+        if (z < 0){const int sgnz = -1.;}
+        const double fac32z = pow(sin(acos(z/r)),2) * (zsmooth*sgnz + 2*B*cos_t);
 
         particles[i].ax += -(fac1 * x*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
         particles[i].ay += -(fac1 * y*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
