@@ -297,7 +297,7 @@ struct rebx_force* rebx_load_force(struct rebx_extras* const rebx, const char* n
         force->update_accelerations = rebx_gr;
         force->force_type = REBX_FORCE_VEL;
     }
-    else if (strcmp(name, "disk_cluster_potential") == 0){
+    else if (strcmp(name, "disk_cluster_force") == 0){
         force->update_accelerations = rebx_disk_cluster_force;
         force->force_type = REBX_FORCE_POS;
     }
