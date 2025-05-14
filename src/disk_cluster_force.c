@@ -1,4 +1,4 @@
-/** * @file disk_cluster_pot.c
+/** * @file disk_cluster_force.c
  * @brief   Force resultant from a disk/cluster potential
  * @author  Mark Dodici <mark.a.dodici@gmail.com>
  * 
@@ -103,6 +103,8 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
         const int sgnz = 1.;
         if (z < 0){const int sgnz = -1.;}
         const double fac32z = pow(sin(acos(z/r)),2) * (zsmooth*sgnz + 2*B*cos_t);
+
+        printf("%f", fac1 * (fac2*z + fac3*(fac31*z + fac32z*r)));
 
         particles[i].ax += -(fac1 * x*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
         particles[i].ay += -(fac1 * y*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
