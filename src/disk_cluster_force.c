@@ -100,7 +100,7 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
 
         const double sgnz = 1.;
         if (z < 0){const double sgnz = -1.;}
-        printf('%f', pow(sin(acos(z/r)),2));
+        printf("%f", pow(sin(acos(z/r)),2));
         
         const double fac32z = pow(sin(acos(z/r)),2) * (zsmooth*sgnz + 2*B*cos_t);
 
