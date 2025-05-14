@@ -76,6 +76,8 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
     const double B = (tgd - 2)/(2*(6-tgd));
     const double A = -(tgd-2)*(8-tgd)/(2*tgd*(6-tgd));
 
+    printf("step one done")
+
     for (int i=1; i<N; i++){
         const double* m = rebx_get_param(rebx, particles[i].ap, "dcp_m");
         const struct reb_particle p = particles[i];
@@ -105,5 +107,7 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
         particles[i].ax += -(fac1 * x*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
         particles[i].ay += -(fac1 * y*(fac2 + fac3*(fac31 - fac32xy)))/(*m);
         particles[i].az += -(fac1 * (fac2*z + fac3*(fac31*z + fac32z*r)))/(*m);
+
+        printf("%f", sim->dt)
     }
 }
