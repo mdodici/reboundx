@@ -1387,7 +1387,7 @@ DLLEXPORT void reb_particles_transform_whds_to_inertial_posvel(struct reb_partic
 
 // Temporary. Function declarations needed by REBOUNDx 
 DLLEXPORT void reb_integrator_ias15_reset(struct reb_simulation* r);         ///< Internal function used to call a specific integrator
-DLLEXPORT void reb_integrator_ias15_part2(struct reb_simulation* r);         ///< Internal function used to call a specific integrator
+DLLEXPORT void reb_integrator_ias15_step(struct reb_simulation* r);         ///< Internal function used to call a specific integrator
 DLLEXPORT void reb_integrator_whfast_from_inertial(struct reb_simulation* const r);   ///< Internal function to the appropriate WHFast coordinates from inertial
 DLLEXPORT void reb_integrator_whfast_to_inertial(struct reb_simulation* const r); ///< Internal function to move back from particular WHFast coordinates to inertial
 DLLEXPORT void reb_integrator_whfast_reset(struct reb_simulation* r);		///< Internal function used to call a specific integrator

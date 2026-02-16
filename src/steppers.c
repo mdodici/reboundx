@@ -64,10 +64,10 @@ void rebx_ias15_step(struct reb_simulation* const sim, struct rebx_operator* con
     
     while(sim->t < t_needed && fabs(sim->dt/old_dt)>1e-14 ){
         reb_simulation_update_acceleration(sim);
-        reb_integrator_ias15_part2(sim);
         if (sim->t+sim->dt > t_needed){
             sim->dt = t_needed-sim->t;
         }
+        reb_integrator_ias15_step(sim);
     }
     sim->t = old_t;
     sim->dt = old_dt; // reset in case this is part of a chain of steps
