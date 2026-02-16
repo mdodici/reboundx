@@ -40,15 +40,25 @@
  *
  * **Effect Parameters**
  * 
- * None
+ * ============================ =========== ==================================================================
+ * Field (C type)               Required    Description
+ * ============================ =========== ==================================================================
+ * gc (double)                  Yes         Power index for cluster density
+ * gd (double)                  Yes         Power index for disk density
+ * mo (double)                  Yes         Mass of central object
+ * mc (double)                  Yes         Mass of cluster internal to scale radius
+ * md (double)                  Yes         Mass of disk internal to scale radius
+ * rh (double)                  Yes         Scale radius
+ * smooth (double?)             Yes         Boolean index, whether or not to smooth potential as |z|->0
+ * 
+ * ============================ =========== ==================================================================
  *
  * **Particle Parameters**
  *
  * ============================ =========== ==================================================================
  * Field (C type)               Required    Description
  * ============================ =========== ==================================================================
- * Acentral (double)             Yes         Normalization for central acceleration.
- * gammacentral (double)         Yes         Power index for central acceleration.
+ * m (double)                   Yes         Particle mass
  * ============================ =========== ==================================================================
  * 
  */
@@ -68,7 +78,7 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
     const double* md = rebx_get_param(rebx, force->ap, "dcp_md");
     const double* mc = rebx_get_param(rebx, force->ap, "dcp_mc");
     const double* rh = rebx_get_param(rebx, force->ap, "dcp_rh");
-    const double* smooth = rebx_get_param(rebx, force->ap, "dcp_smooth");
+    const int* smooth = rebx_get_param(rebx, force->ap, "dcp_smooth");
 
     const double fac1 = *mo/pow(*rh,3); 
     const double tgd = (2-*gd)*(3-*gd); 
@@ -86,20 +96,20 @@ void rebx_disk_cluster_force(struct reb_simulation* const sim, struct rebx_force
         const double r = sqrt(r2);
         const double cos_t = z/r;
         const double cos_t2 = pow(cos_t,2);
-        const double abs_cos_t = abs(cos_t);
+        const double abs_cos_t = fabs(cos_t);
 
         const double fac2 = *mc*pow(r/(*rh), -(*gc)); 
         const double fac3 = C * (*md/(*mo)) * pow(r/(*rh), -(*gd));
         const double fac31 = (A + abs_cos_t + B*cos_t2)*(2-(*gd));
         const double fac32xy = abs_cos_t + 2*B*cos_t2;
 
-        const double zsmooth = 1.;
-        if (smooth == 1){
-            const double zsmooth = (1.- exp(-pow(z,2)/(.001*r2)));
+        double zsmooth = 1.;
+        if (*smooth == 1){
+            zsmooth = (1.- exp(-pow(z,2)/(.001*r2)));
         }
 
-        const double sgnz = 1.;
-        if (z < 0){const double sgnz = -1.;}
+        double sgnz = 1.;
+        if (z < 0){ sgnz = -1.; }
         
         const double fac32z = pow(sin(acos(z/r)),2) * (zsmooth*sgnz + 2*B*cos_t);
 

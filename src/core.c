@@ -57,6 +57,11 @@ void rebx_register_default_params(struct rebx_extras* rebx){
     rebx_register_param(rebx, "dcp_rh", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "dcp_m", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "dcp_smooth", REBX_TYPE_INT);
+    rebx_register_param(rebx, "rfp_m", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "rfp_r", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "cf_mc", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "cf_r0", REBX_TYPE_DOUBLE);
+    rebx_register_param(rebx, "cf_gamma_c", REBX_TYPE_DOUBLE);
 
     rebx_register_param(rebx, "c", REBX_TYPE_DOUBLE);
     rebx_register_param(rebx, "gr_source", REBX_TYPE_INT);
@@ -299,6 +304,14 @@ struct rebx_force* rebx_load_force(struct rebx_extras* const rebx, const char* n
     }
     else if (strcmp(name, "disk_cluster_force") == 0){
         force->update_accelerations = rebx_disk_cluster_force;
+        force->force_type = REBX_FORCE_POS;
+    }
+    else if (strcmp(name, "ring_force") == 0){
+        force->update_accelerations = rebx_ring_force;
+        force->force_type = REBX_FORCE_POS;
+    }
+    else if (strcmp(name, "cluster_force") == 0){
+        force->update_accelerations = rebx_cluster_force;
         force->force_type = REBX_FORCE_POS;
     }
     else if (strcmp(name, "central_force") == 0){
