@@ -26,7 +26,7 @@
  * $Ring Force$
  *
  * ======================= ===============================================
- * Authors                 M. Dodici
+ * Authors                 Mark Dodici
  * Implementation Paper    n/a
  * Based on                e.g., Lass & Blitzer (1983)
  * C Example               n/a

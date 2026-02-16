@@ -27,7 +27,7 @@
  * $Disk+Cluster Potential$       // Effect category (must be the first non-blank line after dollar signs and between dollar signs to be detected by script).
  *
  * ======================= ===============================================
- * Authors                 M. Dodici
+ * Authors                 Mark Dodici
  * Implementation Paper    n/a
  * Based on                Kaur & Stone (2025)
  * C Example               n/a

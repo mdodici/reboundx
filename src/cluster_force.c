@@ -26,7 +26,7 @@
  * $Cluster Force$
  *
  * ======================= ===============================================
- * Authors                 M. Dodici
+ * Authors                 Mark Dodici
  * Implementation Paper    n/a
  * Based on                Cluster potential with mass-density power law
  * C Example               n/a
