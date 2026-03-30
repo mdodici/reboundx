@@ -205,7 +205,7 @@ static void rebx_spin_derivatives(struct reb_ode* const ode, double* const yDot,
 
                 double I_specific;
                 if (mi == 0){ // If test particle, assume I = specific moment of inertia
-                    I_specific = *I;  
+                    I_specific = *I;
                 }
                 else{
                   mu_ij = (mi * mj) / (mi + mj);
@@ -237,8 +237,50 @@ static void rebx_spin_derivatives(struct reb_ode* const ode, double* const yDot,
 static void rebx_spin_sync_pre(struct reb_ode* const ode, const double* const y0){
     struct reb_simulation* sim = ode->ref;
     struct rebx_extras* const rebx = sim->extras;
-    unsigned int Nspins = 0;
     const int N_real = sim->N - sim->N_var;
+    const double G = sim->G;
+
+    // Update tau for particles with constant_lag_angle before the timestep.
+    // Uses vis-viva to compute n from the closest companion's orbit.
+    for (int i=0; i<N_real; i++){
+        struct reb_particle* pi = &sim->particles[i];
+        const double* cla = rebx_get_param(rebx, pi->ap, "constant_lag_angle");
+        if (cla == NULL) continue;
+
+        // Find closest companion (for hierarchical triples, this is the inner binary partner)
+        double min_d2 = DBL_MAX;
+        int closest = -1;
+        for (int j=0; j<N_real; j++){
+            if (i == j) continue;
+            if (sim->particles[j].m == 0) continue;
+            const double dx = pi->x - sim->particles[j].x;
+            const double dy = pi->y - sim->particles[j].y;
+            const double dz = pi->z - sim->particles[j].z;
+            const double d2 = dx*dx + dy*dy + dz*dz;
+            if (d2 < min_d2){ min_d2 = d2; closest = j; }
+        }
+        if (closest < 0) continue;
+
+        struct reb_particle* pj = &sim->particles[closest];
+        const double mtot = pi->m + pj->m;
+        const double dx = pi->x - pj->x;
+        const double dy = pi->y - pj->y;
+        const double dz = pi->z - pj->z;
+        const double dvx = pi->vx - pj->vx;
+        const double dvy = pi->vy - pj->vy;
+        const double dvz = pi->vz - pj->vz;
+        const double dr = sqrt(dx*dx + dy*dy + dz*dz);
+        const double v2 = dvx*dvx + dvy*dvy + dvz*dvz;
+        const double a_inv = 2.0/dr - v2/(G*mtot);
+        if (a_inv > 0){
+            const double n = sqrt(G * mtot * a_inv * a_inv * a_inv);
+            const double tau = (*cla) / n;
+            rebx_set_param_double(rebx, (struct rebx_node**)&pi->ap, "tau", tau);
+        }
+    }
+
+    // Sync spin vectors into ODE state
+    unsigned int Nspins = 0;
     for (int i=0; i<N_real; i++){
         struct reb_particle* p = &sim->particles[i];
         double* I = rebx_get_param(rebx, p->ap, "I");
